@@ -33,7 +33,7 @@ jobs:
 
       - name: Zip artifact for deployment
         run: |
-          zip -r release.zip host.json requirements.txt OrderApi/
+          zip -r release.zip host.json requirements.txt HttpTrigger1/
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -68,3 +68,4 @@ jobs:
           app-name: 'dev-func-app-Kupune'
           slot-name: 'Production'
           package: release.zip
+
