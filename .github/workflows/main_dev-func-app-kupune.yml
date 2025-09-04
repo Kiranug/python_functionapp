@@ -24,16 +24,18 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      # Ensure azure-functions is in requirements
-      - name: Verify azure-functions dependency
-        run: grep -q "azure-functions" requirements.txt || echo "azure-functions" >> requirements.txt
-
-      - name: Zip artifact for deployment
+      - name: Ensure azure-functions is in requirements
         run: |
-          zip -r release.zip host.json requirements.txt HttpTrigger1/
+          grep -q "azure-functions" requirements.txt || echo "azure-functions" >> requirements.txt
+          pip install -r requirements.txt
+
+      - name: Prepare deployment package
+        run: |
+          mkdir package
+          cp host.json requirements.txt package/
+          cp -r HttpTrigger1 package/
+          cd package
+          zip -r ../release.zip .
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -68,4 +70,3 @@ jobs:
           app-name: 'dev-func-app-Kupune'
           slot-name: 'Production'
           package: release.zip
-
